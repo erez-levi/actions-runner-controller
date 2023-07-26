@@ -47,6 +47,7 @@ authSecret:
   #github_basicauth_username: ""
   #github_basicauth_password: ""
 
+# http(s) should be specified for dockerRegistryMirror, e.g.: dockerRegistryMirror="https://<your-docker-registry-mirror>"
 dockerRegistryMirror: ""
 image:
   repository: "summerwind/actions-runner-controller"
@@ -108,7 +109,10 @@ service:
 # Metrics service resource
 metrics:
   serviceAnnotations: {}
-  serviceMonitor: false
+  serviceMonitor:
+    enable: false
+    timeout: 30s
+    interval: 1m
   serviceMonitorLabels: {}
   port: 8443
   proxy:
@@ -188,8 +192,16 @@ admissionWebHooks:
 # https://github.com/actions/actions-runner-controller/issues/1005#issuecomment-993097155
 #hostNetwork: true
 
+# If you use `hostNetwork: true`, then you need dnsPolicy: ClusterFirstWithHostNet
+# https://kubernetes.io/docs/concepts/services-networking/dns-pod-service/#pod-s-dns-policy
+#dnsPolicy: ClusterFirst
+
 ## specify log format for actions runner controller.  Valid options are "text" and "json"
 logFormat: text
+
+# enable setting the docker group id for the runner container
+# https://github.com/actions/actions-runner-controller/pull/2499
+#dockerGID: 121
 
 githubWebhookServer:
   enabled: false
@@ -299,7 +311,10 @@ actionsMetrics:
   # as a part of the helm release.
   # Do note that you also need actionsMetricsServer.enabled=true
   # to deploy the actions-metrics-server whose k8s service is referenced by the service monitor.
-  serviceMonitor: false
+  serviceMonitor:
+    enable: false
+    timeout: 30s
+    interval: 1m
   serviceMonitorLabels: {}
   port: 8443
   proxy:
@@ -359,6 +374,7 @@ actionsMetricsServer:
         protocol: TCP
         name: http
         #nodePort: someFixedPortForUseWithTerraformCdkCfnEtc
+    loadBalancerSourceRanges: []
   ingress:
     enabled: false
     ingressClassName: ""
@@ -388,4 +404,5 @@ actionsMetricsServer:
     #  - secretName: chart-example-tls
     #    hosts:
     #      - chart-example.local
-
+  terminationGracePeriodSeconds: 10
+  lifecycle: {}
