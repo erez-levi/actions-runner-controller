@@ -2,14 +2,6 @@
 FROM --platform=$BUILDPLATFORM nvidia/cuda:11.8.0-runtime-ubuntu22.04 as builder
 
 RUN apt-get update && apt-get install -y wget
-RUN wget -q https://storage.googleapis.com/txt2img_public/txt2img_worker_tensorrt_debian_archives/cuda-nvrtc-11-8_11.8.89-1_amd64.deb  \
-    && wget -q https://storage.googleapis.com/txt2img_public/txt2img_worker_tensorrt_debian_archives/nv-tensorrt-local-repo-ubuntu2204-8.6.0-cuda-11.8_1.0-1_amd64.deb \
-    && dpkg -i *.deb \
-    && rm -rf *.deb \
-    && cp /var/nv-tensorrt-local-repo-ubuntu2204-8.6.0-cuda-11.8/*-keyring.gpg /usr/share/keyrings/\
-    && apt-get update \
-    && apt-get install -f
-
 # install the packages themselves
 RUN apt-get install --no-install-recommends -y --allow-change-held-packages\
     # tensorrt implementation packages (not all are used in second stage build)
