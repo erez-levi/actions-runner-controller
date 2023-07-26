@@ -51,16 +51,6 @@ RUN go mod download
 # With the above commmand,
 # TARGETOS can be "linux", TARGETARCH can be "amd64", "arm64", and "arm", TARGETVARIANT can be "v7".
 
-ARG ARCH=""
-RUN if [ "$ARCH" = "" ]; then \
-      case "$(uname -m)" in \
-        "x86_64" | "amd64" | "i686" | "i386") export ARCH="amd64" ;; \
-        "aarch64" | "arm64" | "armv8l") export ARCH="arm64" ;; \
-        "armv7l" | "arm") export ARCH="arm" ;; \
-        *) echo "Unsupported architecture: $(uname -m)" && exit 1 ;; \
-      esac \
-    fi
-
 ARG TARGETPLATFORM TARGETOS TARGETARCH TARGETVARIANT VERSION=dev
 
 # We intentionally avoid `--mount=type=cache,mode=0777,target=/go/pkg/mod` in the `go mod download` and the `go build` runs
