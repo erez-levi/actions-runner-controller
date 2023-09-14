@@ -1,5 +1,5 @@
 # Build the manager binary
-FROM --platform=$BUILDPLATFORM golang:1.20.7 as builder
+FROM --platform=$BUILDPLATFORM gcr.io/ltx-research/gpu-actions-runner-ubuntu-22.04:0.0.2 as builder
 
 WORKDIR /workspace
 
@@ -44,7 +44,7 @@ RUN --mount=target=. \
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/ltx-research/gpu-actions-runner-ubuntu-22.04:0.0.2
+FROM gcr.io/distroless/static:nonroot
 
 WORKDIR /
 
