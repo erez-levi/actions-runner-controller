@@ -1,24 +1,5 @@
 # Build the manager binary
-FROM --platform=$BUILDPLATFORM nvidia/cuda:11.8.0-runtime-ubuntu22.04 as builder
-
-RUN apt-get update && apt-get install -y wget
-# install the packages themselves
-RUN apt-get install --no-install-recommends -y --allow-change-held-packages\
-    # tensorrt implementation packages (not all are used in second stage build)
-    libnvinfer8=8.6.0.12-1+cuda11.8\
-    libnvinfer-plugin8=8.6.0.12-1+cuda11.8\
-    libnvinfer-vc-plugin8=8.6.0.12-1+cuda11.8\
-    libnvparsers8=8.6.0.12-1+cuda11.8\
-    libnvonnxparsers8=8.6.0.12-1+cuda11.8\
-    libnvinfer-lean8=8.6.0.12-1+cuda11.8\
-    libnvinfer-dispatch8=8.6.0.12-1+cuda11.8\
-    libnvinfer-bin=8.6.0.12-1+cuda11.8\
-    # dependency of previous packages, not actually used in practice as it is already included in the base image
-    libcudnn8=8.9.0.131-1+cuda11.8\
-    # tensorrt python package
-    python3-libnvinfer=8.6.0.12-1+cuda11.8\
-    # required to fix bug in torch2.0 (installed libnvrtc.so)
-    cuda-nvrtc-11-8
+FROM --platform=$BUILDPLATFORM golang:1.20.7 as builder
 
 WORKDIR /workspace
 
@@ -63,7 +44,7 @@ RUN --mount=target=. \
 
 # Use distroless as minimal base image to package the manager binary
 # Refer to https://github.com/GoogleContainerTools/distroless for more details
-FROM gcr.io/distroless/static:nonroot
+FROM gcr.io/ltx-research/gpu-actions-runner-ubuntu-22.04:0.0.2
 
 WORKDIR /
 
